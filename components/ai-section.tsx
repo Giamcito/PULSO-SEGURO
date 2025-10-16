@@ -1,17 +1,17 @@
 // components/ai-section.tsx
 "use client"
 
-import React, { useEffect, useRef, useState } from "react"
-import {
-  Card as CardImport,
-  CardContent as CardContentImport,
-  CardHeader as CardHeaderImport,
-  CardTitle as CardTitleImport,
-  CardDescription as CardDescriptionImport,
-} from "@/components/ui/card"
 import { Button as ButtonImport } from "@/components/ui/button"
+import {
+  CardContent as CardContentImport,
+  CardDescription as CardDescriptionImport,
+  CardHeader as CardHeaderImport,
+  Card as CardImport,
+  CardTitle as CardTitleImport,
+} from "@/components/ui/card"
 import { Input as InputImport } from "@/components/ui/input"
-import { Brain as BrainIcon, Send as SendIcon, Sparkles, LineChart, Shield, ArrowRight } from "lucide-react"
+import { ArrowRight, Brain as BrainIcon, LineChart, Send as SendIcon, Shield, Sparkles } from "lucide-react"
+import React, { useEffect, useRef, useState } from "react"
 
 /* Fallbacks simples si alguna importación viene undefined. */
 const Card: any = (CardImport as any) ?? ((props: any) => <div className={props.className}>{props.children}</div>)
@@ -274,7 +274,7 @@ export function AiSection() {
               </CardHeader>
 
               <CardContent>
-                <div ref={chatRef} className="h-56 overflow-y-auto rounded-md border p-3 bg-card">
+                <div ref={chatRef} className="h-120 overflow-y-auto rounded-md border p-3 bg-card">
                   {messages.length === 0 && (
                     <p className="text-muted-foreground text-center mt-6">💬 Escribe algo para comenzar</p>
                   )}
