@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Heart, Menu, X, Home, Users, BookOpen } from "lucide-react"
+import { Heart, Menu, X, Home, Users, BookOpen, Cpu } from "lucide-react"
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -12,6 +12,7 @@ export function Navbar() {
     { href: "/", label: "Inicio", icon: Home },
     { href: "/comunidad", label: "Comunidad", icon: Users },
     { href: "/recursos", label: "Recursos", icon: BookOpen },
+    { href: "/nosotros", label: "Nosotros", icon: Users },
   ]
 
   return (
@@ -19,11 +20,11 @@ export function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity ">
             <div className="p-2 bg-primary rounded-lg">
               <Heart className="h-6 w-6 text-primary-foreground" fill="currentColor" />
             </div>
-            <span className="text-xl font-bold">Pulso Seguro</span>
+            <span className="text-3xl font-bold">Pulso Seguro</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -34,7 +35,7 @@ export function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                  className="flex items-center gap-2 text-md font-medium text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <Icon className="h-4 w-4" />
                   {link.label}
@@ -46,7 +47,10 @@ export function Navbar() {
           {/* CTA Button Desktop */}
           <div className="hidden md:block">
             <Button asChild>
-              <Link href="#ai-section">Evaluación IA</Link>
+              <Link href="/ia" className="text-lg transition-all duration-300 ease-in-out transform hover:translate-y-1 hover:shadow-md hover:cursor-pointer flex items-center">
+                <Cpu className="h-5 w-5 mr-2" />
+                Evaluación IA
+              </Link>
             </Button>
           </div>
 
@@ -81,7 +85,8 @@ export function Navbar() {
                 )
               })}
               <Button asChild className="w-full">
-                <Link href="#ai-section" onClick={() => setIsMenuOpen(false)}>
+                <Link href="/ia" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-center">
+                  <Cpu className="h-5 w-5 mr-2" />
                   Evaluación IA
                 </Link>
               </Button>

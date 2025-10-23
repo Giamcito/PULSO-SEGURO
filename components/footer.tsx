@@ -35,7 +35,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/#ai-section" className="hover:text-primary transition-colors">
+                <Link href="/ia" className="hover:text-primary transition-colors">
                   Evaluación IA
                 </Link>
               </li>

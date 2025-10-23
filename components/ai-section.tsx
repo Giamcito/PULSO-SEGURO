@@ -35,9 +35,6 @@ const Input: any =
 
 const Brain = (BrainIcon as any) ?? (() => <span>🧠</span>)
 const Send = (SendIcon as any) ?? (() => <span>➡️</span>)
-const SparklesIcon = (Sparkles as any) ?? (() => <span>✨</span>)
-const LineChartIcon = (LineChart as any) ?? (() => <span>📈</span>)
-const ShieldIcon = (Shield as any) ?? (() => <span>🛡️</span>)
 const ArrowRightIcon = (ArrowRight as any) ?? (() => <span>➡️</span>)
 
 /** Named export requerido por app/page.tsx */
@@ -47,6 +44,37 @@ export function AiSection() {
   const [loading, setLoading] = useState(false)
 
   const chatRef = useRef<HTMLDivElement | null>(null)
+  const chatCardRef = useRef<HTMLDivElement | null>(null)
+  const inputRef = useRef<HTMLInputElement | null>(null)
+  const SCROLL_OFFSET = 96 // ajuste en px: aumenta si quieres que quede más abajo, disminuye si quieres más arriba
+
+  // Scroll suave hacia el chat (usa la ref si existe)
+  const scrollToChat = () => {
+    try {
+      // Priorizar el contenedor completo del chat y aplicar offset para que quede "un poco más arriba"
+      if (chatCardRef.current) {
+        const rect = chatCardRef.current.getBoundingClientRect()
+        const top = rect.top + window.scrollY - SCROLL_OFFSET
+        window.scrollTo({ top: Math.max(0, top), behavior: "smooth" })
+        return
+      }
+      // Fallback: scroll al área de mensajes con offset
+      if (chatRef.current) {
+        const rect = chatRef.current.getBoundingClientRect()
+        const top = rect.top + window.scrollY - SCROLL_OFFSET
+        window.scrollTo({ top: Math.max(0, top), behavior: "smooth" })
+        return
+      }
+      const el = document.getElementById("chat-container")
+      if (el) {
+        const rect = el.getBoundingClientRect()
+        const top = rect.top + window.scrollY - SCROLL_OFFSET
+        window.scrollTo({ top: Math.max(0, top), behavior: "smooth" })
+      }
+    } catch (e) {
+      // noop
+    }
+  }
 
   // Hace scroll al final cuando cambian mensajes
   useEffect(() => {
@@ -145,65 +173,40 @@ export function AiSection() {
     }
   }
 
+  const suggestedPrompts = [
+    "¿Cuál es mi riesgo cardiovascular según mis datos?",
+    "Consejos rápidos de dieta para bajar colesterol",
+    "Rutina de ejercicio suave para principiantes",
+    "¿Qué alimentos debo evitar si tengo hipertensión?",
+  ]
+
+  const handleChoosePrompt = (p: string) => {
+    setInput(p)
+    // desplazar y enfocar
+    scrollToChat()
+    setTimeout(() => inputRef.current?.focus(), 300)
+  }
+
   return (
-    <section className="py-20">
+    <section id="ai-section" className="py-20">
       <div className="container mx-auto px-4">
         <div className="mx-auto max-w-5xl">
           <div className="mb-12 text-center">
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-accent/10 px-4 py-2 text-sm font-medium text-accent">
-              <SparklesIcon className="h-4 w-4" />
-              <span>Próximamente</span>
-            </div>
             <h2 className="mb-4 text-balance text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">
               Evaluación con Inteligencia Artificial
             </h2>
-            <p className="mx-auto max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground">
-              Estamos desarrollando una herramienta de IA avanzada para identificar patrones y ayudarte a prevenir
-              problemas cardiovasculares.
-            </p>
           </div>
 
-          <Card className="border-2 border-accent/20 bg-gradient-to-br from-accent/5 to-primary/5">
+          <Card className="border-2 border-accent/20 bg-gradient-to-br from-accent/5 to-primary/5 shadow-md">
             <CardHeader className="text-center">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent/10">
                 <Brain className="h-8 w-8 text-accent" />
               </div>
               <CardTitle className="text-2xl">Sistema de Análisis Predictivo</CardTitle>
-              <CardDescription className="text-base">Tecnología de vanguardia para tu salud cardiovascular</CardDescription>
+              <CardDescription className="text-base">Recibe recomendaciones específicas basadas en tu perfil de riesgo único</CardDescription>
             </CardHeader>
 
             <CardContent>
-              <div className="grid gap-6 md:grid-cols-3">
-                <div className="flex flex-col items-center text-center">
-                  <div className="mb-3 rounded-lg bg-card p-3">
-                    <LineChartIcon className="h-6 w-6 text-primary" />
-                  </div>
-                  <h3 className="mb-2 font-semibold text-foreground">Análisis de Patrones</h3>
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    Identifica tendencias en tus datos de salud para detectar riesgos tempranos
-                  </p>
-                </div>
-
-                <div className="flex flex-col items-center text-center">
-                  <div className="mb-3 rounded-lg bg-card p-3">
-                    <ShieldIcon className="h-6 w-6 text-primary" />
-                  </div>
-                  <h3 className="mb-2 font-semibold text-foreground">Prevención Personalizada</h3>
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    Recomendaciones específicas basadas en tu perfil de riesgo único
-                  </p>
-                </div>
-
-                <div className="flex flex-col items-center text-center">
-                  <div className="mb-3 rounded-lg bg-card p-3">
-                    <SparklesIcon className="h-6 w-6 text-primary" />
-                  </div>
-                  <h3 className="mb-2 font-semibold text-foreground">Monitoreo Continuo</h3>
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    Seguimiento inteligente de tu salud cardiovascular en tiempo real
-                  </p>
-                </div>
-              </div>
 
               <div className="mt-8 rounded-lg bg-card p-6">
                 <h3 className="mb-4 text-center text-lg font-semibold text-foreground">¿Cómo funcionará?</h3>
@@ -245,44 +248,69 @@ export function AiSection() {
                   </div>
                 </div>
               </div>
-
-              <div className="mt-8 text-center">
-                <Button size="lg" disabled className="gap-2" type="button">
-                  Próximamente disponible
-                  <ArrowRightIcon className="h-4 w-4" />
+              <div className="mt-4 flex justify-center">
+                <Button
+                  onClick={scrollToChat}
+                  className="px-4 py-2 bg-gradient-to-r from-accent to-red-800 text-white transition-all duration-300 ease-in-out transform hover:-translate-y-0.5 hover:shadow-lg"
+                  type="button"
+                  aria-label="Ir al chat"
+                >
+                  Ir al chat
+                  <ArrowRightIcon className="ml-2 h-4 w-4" />
                 </Button>
-                <p className="mt-3 text-sm text-muted-foreground">
-                  Regístrate para recibir notificaciones cuando esté disponible
-                </p>
               </div>
             </CardContent>
           </Card>
 
           {/* Chat box abajo */}
-          <div className="mt-8">
-            <Card className="mt-6">
+          <div className="mt-6" ref={chatCardRef}>
+            <Card className="mt-6 shadow-lg">
               <CardHeader>
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 flex items-center justify-center rounded-full bg-accent/10">
                     <Brain className="h-6 w-6 text-accent" />
                   </div>
                   <div>
-                    <CardTitle className="text-lg">Chat IA (beta)</CardTitle>
+                    <CardTitle className="text-lg">Karmelita IA</CardTitle>
                     <CardDescription className="text-sm">Haz preguntas sobre salud cardiovascular</CardDescription>
                   </div>
                 </div>
               </CardHeader>
 
               <CardContent>
-                <div ref={chatRef} className="h-120 overflow-y-auto rounded-md border p-3 bg-card">
+                <div className="mb-4 flex items-center justify-between">
+                  <div className="text-sm text-muted-foreground">Sugerencias rápidas</div>
+                  <div className="text-xs text-muted-foreground">Respuestas en segundos</div>
+                </div>
+
+                <div className="mb-4 flex flex-wrap gap-3">
+                  {suggestedPrompts.map((p) => (
+                    <button
+                      key={p}
+                      onClick={() => handleChoosePrompt(p)}
+                      className="px-3 py-1 rounded-full bg-muted/40 hover:bg-muted/60 text-sm transition"
+                      aria-label={`Usar prompt: ${p}`}
+                    >
+                      {p}
+                    </button>
+                  ))}
+                </div>
+
+                <div
+                  id="chat-container"
+                  ref={chatRef}
+                  className="min-h-[10rem] max-h-[30rem] overflow-y-auto rounded-md border p-3 bg-card transition-all duration-200"
+                >
                   {messages.length === 0 && (
-                    <p className="text-muted-foreground text-center mt-6">💬 Escribe algo para comenzar</p>
+                    <p className="text-muted-foreground text-center mt-6">Escribe algo en el chat para comenzar</p>
                   )}
                   {messages.map((m, i) => (
                     <div key={i} className={`my-2 flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
                       <div
-                        className={`max-w-[75%] rounded-lg px-3 py-2 text-sm ${
-                          m.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
+                        className={`max-w-[85%] rounded-2xl px-4 py-2 text-sm break-words whitespace-pre-wrap shadow-sm leading-relaxed ${
+                          m.role === "user"
+                            ? "bg-gradient-to-r from-accent to-red-800 text-white rounded-br-none"
+                            : "bg-white text-foreground rounded-bl-none border"
                         }`}
                       >
                         {m.content}
@@ -297,10 +325,17 @@ export function AiSection() {
                     value={input}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    className="flex-1"
+                    ref={inputRef}
+                    className="flex-1 px-4 py-3 rounded-lg border border-muted-foreground/20 bg-input placeholder:text-muted-foreground shadow-sm focus:outline-none focus:ring-2 focus:ring-primary"
                     aria-label="Mensaje"
                   />
-                  <Button onClick={sendMessage} disabled={loading} className="px-4" type="button" aria-label="Enviar">
+                  <Button
+                    onClick={sendMessage}
+                    disabled={loading}
+                    className="px-4 rounded-lg bg-gradient-to-r from-accent to-red-800 text-white hover:shadow-md"
+                    type="button"
+                    aria-label="Enviar"
+                  >
                     <Send className="h-4 w-4" />
                   </Button>
                 </div>
